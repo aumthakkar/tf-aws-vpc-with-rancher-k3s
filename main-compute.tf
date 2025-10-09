@@ -20,6 +20,7 @@ resource "random_id" "pht_node_id" {
 
 resource "aws_key_pair" "pht_node_key" {
   key_name   = var.key_name
+
   public_key = file(var.public_key_path)
 }
 
@@ -29,7 +30,7 @@ resource "aws_instance" "pht_node" {
   instance_type = var.instance_type
   ami           = data.aws_ami.pht_instance_ami.id
 
-  key_name = aws_key_pair.pht_node_key.id
+  key_name = aws_key_pair.pht_node_key.key_name
 
   vpc_security_group_ids = [aws_security_group.pht_security_groups["public"].id]
   subnet_id              = aws_subnet.pht_public_subnets[*].id

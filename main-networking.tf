@@ -98,7 +98,7 @@ resource "aws_default_route_table" "pht_private_route_table" {
 }
 
 resource "aws_security_group" "pht_security_groups" {
-  for_each = var.security_groups
+  for_each = local.security_groups
 
   vpc_id = aws_vpc.pht_vpc.id
 
