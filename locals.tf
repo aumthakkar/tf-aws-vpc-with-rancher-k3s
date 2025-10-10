@@ -60,6 +60,3 @@ locals {
   private_subnet_cidr_block = var.auto_create_subnet_cidr ? local.private_cidr : var.private_subnet_cidr_block
 }
 
-locals {
-  k3s_local_path = abspath(path.root)
-}
