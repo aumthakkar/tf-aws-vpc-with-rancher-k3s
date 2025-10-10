@@ -33,7 +33,7 @@ resource "aws_instance" "pht_node" {
   key_name = aws_key_pair.pht_node_key.key_name
 
   vpc_security_group_ids = [aws_security_group.pht_security_groups["public"].id]
-  subnet_id              = aws_subnet.pht_public_subnets[*].id
+  subnet_id              = aws_subnet.pht_public_subnets[count.index].id
 
   user_data = templatefile("${path.module}/scripts/userdata.tftpl",
     {
