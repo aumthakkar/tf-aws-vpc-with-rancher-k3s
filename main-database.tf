@@ -6,7 +6,7 @@ resource "aws_db_instance" "pht_db_instance" {
   engine_version = var.db_engine_version
 
   vpc_security_group_ids = [aws_security_group.pht_security_groups["rds"].id]
-  db_subnet_group_name   = aws_db_subnet_group.pht_db_subnet_group.name
+  db_subnet_group_name   = aws_db_subnet_group.pht_db_subnet_group[count.index].name
 
   identifier = var.db_identifier
   db_name    = var.dbname
