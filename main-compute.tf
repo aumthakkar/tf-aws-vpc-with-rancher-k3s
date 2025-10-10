@@ -67,18 +67,18 @@ resource "aws_instance" "pht_node" {
     command = templatefile("${path.module}/scripts/scp-script.tftpl", {
       private_key_path = var.private_key_path
       nodeip           = self.public_ip
-      k3s_path         = var.k3s_local_path
+      k3s_path         = abspath(${path.root})
       nodename         = self.tags.Name
       }
     )
   }
 
-  # provisioner "local-exec" {
-  #   when = destroy
+  provisioner "local-exec" {
+    when = destroy
 
-  #   command = "rm -f ${var.k3s_local_path}/k3s-${self.tags.Name}.yaml"
+    command = "rm -f abspath(${path.root})/k3s-${self.tags.Name}.yaml"
 
-  # }
+  }
 
 }
 
