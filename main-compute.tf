@@ -73,12 +73,12 @@ resource "aws_instance" "pht_node" {
     )
   }
 
-  provisioner "local-exec" {
-    when = destroy
+  # provisioner "local-exec" {
+  #   when = destroy
 
-    command = "rm -f ${var.k3s_local_path}/k3s-${self.tags.Name}.yaml"
+  #   command = "rm -f ${var.k3s_local_path}/k3s-${self.tags.Name}.yaml"
 
-  }
+  # }
 
 }
 
