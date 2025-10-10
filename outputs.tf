@@ -20,11 +20,12 @@ output "instance_port" {
 }
 
 # Database related Outputs
-output "db_endpoint" {
-  value = aws_db_instance.pht_db_instance.endpoint
-}
+# output "db_endpoint" {
+#   value = aws_db_instance.pht_db_instance.endpoint
+# }
 
 # LoadBalancer related Outputs
+
 /*
 output "lb_target_group_arn" {
   value = aws_lb_target_group.pht_lb_target_group.arn
