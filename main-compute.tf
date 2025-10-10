@@ -35,7 +35,7 @@ resource "aws_instance" "pht_node" {
   vpc_security_group_ids = [aws_security_group.pht_security_groups["public"].id]
   subnet_id              = aws_subnet.pht_public_subnets[*].id
 
-  user_data = templatefile("${path.root}/scripts/userdata.tftpl",
+  user_data = templatefile("${path.module}/scripts/userdata.tftpl",
     {
       nodename    = "${var.name_prefix}-nodeid-${random_id.pht_node_id[count.index].dec}"
       dbuser      = var.dbuser
@@ -60,11 +60,11 @@ resource "aws_instance" "pht_node" {
       private_key = file(var.private_key_path)
       host        = self.public_ip
     }
-    script = "${path.root}/scripts/delay.sh"
+    script = "${path.module}/scripts/delay.sh"
   }
 
   provisioner "local-exec" {
-    command = templatefile("${path.root}/scripts/scp-script.tftpl", {
+    command = templatefile("${path.module}/scripts/scp-script.tftpl", {
       private_key_path = var.private_key_path
       nodeip           = self.public_ip
       k3s_path         = "${path.cwd}/../"
@@ -76,7 +76,7 @@ resource "aws_instance" "pht_node" {
   provisioner "local-exec" {
     when = destroy
 
-    command = "rm -f ${path.root}/../k3s-${self.tags.Name}.yaml"
+    command = "rm -f ${path.module}/../k3s-${self.tags.Name}.yaml"
 
   }
 
