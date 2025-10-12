@@ -5,7 +5,7 @@
 *.tfvars
 *.tfvars.json
 
-*.yaml
+
 
 # Ignore CLI configuration files
 .terraformrc
