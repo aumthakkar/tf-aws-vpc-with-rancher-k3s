@@ -9,8 +9,8 @@ on:
 
 jobs:
   plan:
-    name: Terraform Install, Validate, & Plan
-    runs-on: ubuntu_latest
+    name: Terraform Setup, Initialize & Validate
+    runs-on: ubuntu-latest
 
     env:
       TF_VERSION: "1.13.3"
@@ -19,12 +19,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS Creds
-        uses: aws-actions/configure-aws-credentials@v5.1.0
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -40,32 +34,4 @@ jobs:
         run: |
           terraform validate
       
-      - name: TF Plan
-        run: |
-          terraform plan -out=tfplan
-
-      - name: Upload tfplan file
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: tfplan
-
-
-  deploy:
-    needs: plan
-    
-    name: Terraform Apply
-    runs-on: ubuntu-latest 
-
-    steps: 
-      - name: Download tfplan file
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-          path: .
-
-      - name: Terraform Apply  
-        run: |
-          if: github.ref == 'refs/head/main'
-          terraform apply tfplan -auto-approve
       
