@@ -56,7 +56,7 @@ locals {
 }
 
 locals {
-  public_subnet_cidr_block  = var.auto_create_subnet_cidr ? local.public_cidr : var.public_subnet_cidr_block
-  private_subnet_cidr_block = var.auto_create_subnet_cidr ? local.private_cidr : var.private_subnet_cidr_block
+  public_subnet_cidr_block  = var.auto_create_subnet_cidr ? local.public_cidr : split(",", var.public_subnet_cidr_block)
+  private_subnet_cidr_block = var.auto_create_subnet_cidr ? local.private_cidr : split(",", var.private_subnet_cidr_block)
 }
 

@@ -21,7 +21,7 @@ resource "random_id" "pht_node_id" {
 resource "aws_key_pair" "pht_node_key" {
   key_name   = var.key_name
 
-  public_key = file(var.public_key_path)
+  public_key = var.public_key
 }
 
 resource "aws_instance" "pht_node" {
@@ -57,7 +57,7 @@ resource "aws_instance" "pht_node" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file(var.private_key_path)
+      private_key = var.private_key
       host        = self.public_ip
     }
     script = "${path.module}/scripts/delay.sh"

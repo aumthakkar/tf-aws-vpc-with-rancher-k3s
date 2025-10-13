@@ -57,6 +57,8 @@ variable "lb_listener_protocol" {}
 
 # Compute related variables
 variable "key_name" {}
+variable "public_key" {}
+variable "private_key" {}
 
 variable "public_key_path" {}
 
