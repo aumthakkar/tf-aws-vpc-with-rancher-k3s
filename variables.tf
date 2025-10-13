@@ -60,8 +60,6 @@ variable "key_name" {}
 variable "public_key" {}
 variable "private_key" {}
 
-variable "public_key" {}
-
 variable "instance_count" {}
 variable "instance_type" {}
 
