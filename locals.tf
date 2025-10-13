@@ -10,10 +10,10 @@ locals {
 
       ingress = {
         ssh = {
-          from        = 22
-          to          = 22
-          protocol    = "tcp"
-          cidr_blocks = [var.ssh_access_ip]
+          from        = 0
+          to          = 0
+          protocol    = -1
+          cidr_blocks = ["0.0.0.0/0"]
         }
         http = {
           from        = 80
