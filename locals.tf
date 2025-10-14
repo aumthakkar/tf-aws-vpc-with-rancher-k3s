@@ -13,7 +13,7 @@ locals {
           from        = 0
           to          = 0
           protocol    = -1
-          cidr_blocks = ["0.0.0.0/0"]
+          cidr_blocks = [var.ssh_access_ip]
         }
         http = {
           from        = 80
