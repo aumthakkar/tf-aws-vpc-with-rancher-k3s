@@ -57,7 +57,7 @@ resource "aws_instance" "pht_node" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = var.private_key
+      private_key = file(var.private_key_path)
       host        = self.public_ip
     }
     script = "${path.module}/scripts/delay.sh"
