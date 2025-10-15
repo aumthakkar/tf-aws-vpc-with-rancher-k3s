@@ -11,7 +11,7 @@ data "aws_ami" "pht_instance_ami" {
 resource "random_id" "pht_node_id" {
   count = var.instance_count
 
-  byte_length = 2
+  byte_length = 3
   # Adding keepers below so a new random_id will be created asa there is a change to key_name
   keepers = {
     key_name = var.key_name
@@ -51,33 +51,6 @@ resource "aws_instance" "pht_node" {
 
   root_block_device {
     volume_size = var.instance_vol_size #10
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file(var.private_key_path)
-      host        = self.public_ip
-    }
-    script = "${path.module}/scripts/delay.sh"
-  }
-
-  provisioner "local-exec" {
-    command = templatefile("${path.module}/scripts/scp-script.tftpl", {
-      private_key_path = var.private_key_path
-      nodeip           = self.public_ip
-      k3s_path         = abspath(path.root)
-      nodename         = self.tags.Name
-      }
-    )
-  }
-
-  provisioner "local-exec" {
-    when = destroy
-
-    command = "rm -f ${abspath(path.root)}/k3s-${self.tags.Name}.yaml"
-
   }
 
 }
