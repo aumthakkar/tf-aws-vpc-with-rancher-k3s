@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Waiting 3 mins for SSHD to settle!"
 sleep 180
 scp -i ${private_key_path} \
 -o StrictHostKeyChecking=no \
