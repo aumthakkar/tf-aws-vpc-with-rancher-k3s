@@ -72,7 +72,6 @@ variable "dbpass" {}
 
 variable "instance_vol_size" {}
 
-variable "private_key_path" {}
 
 # variable "lb_target_group_arn" {}
 variable "host_port" {}
