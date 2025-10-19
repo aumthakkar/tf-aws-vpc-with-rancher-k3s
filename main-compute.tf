@@ -12,7 +12,7 @@ resource "random_id" "pht_node_id" {
   count = var.instance_count
 
   byte_length = 2
-  # Adding keepers below so a new random_id will be created asa there is a change to key_name
+  # Adding keepers below so a new random_id will be created if there is a change to key_name
   keepers = {
     key_name = var.key_name
   }
