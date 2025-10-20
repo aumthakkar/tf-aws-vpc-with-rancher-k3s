@@ -124,7 +124,7 @@ resource "aws_nat_gateway" "my_nat_gateway" {
   count = var.create_nat_gateway ? 1 : 0
   depends_on = [aws_internet_gateway.my_igw]
 
-  allocation_id = aws_eip.my_nat_gw_eip.id
+  allocation_id = aws_eip.my_nat_gw_eip[0].id
   subnet_id     = aws_subnet.my_public_subnets[0].id
 
   tags = {
