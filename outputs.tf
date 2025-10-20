@@ -3,11 +3,11 @@ output "load_balancer_endpoint" {
 }
 
 output "instance_ips" {
-  value = { for i in module.compute.instance_outputs : i.tags.Name => "${i.public_ip}:${module.compute.instance_port}" }
+  value = { for i in aws_instance.my_node[*] : i.tags.Name => "${i.public_ip}:${aws_lb_target_group_attachment.my_lb_target_group_attachment[*].port}" }
 }
 
 output "kubeconfig" {
-  value = [for i in module.compute.instance_outputs : "export KUBECONFIG=./k3s-${i.tags.Name}.yaml"]
+  value = [for i in aws_instance.my_node[*] : "export KUBECONFIG=./k3s-${i.tags.Name}.yaml"]
 }
 
 # Compute related Outputs

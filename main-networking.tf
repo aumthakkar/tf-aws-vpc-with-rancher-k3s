@@ -99,7 +99,7 @@ resource "aws_default_route_table" "default_private_route_table" {
 
 
 resource "aws_route_table" "my_private_route_table" {
-  vpc_id = aws_vpc.my_eks_vpc.id
+  vpc_id = aws_vpc.my_vpc.id
 
   tags = {
     Name = "${var.name_prefix}-private-route-table"
