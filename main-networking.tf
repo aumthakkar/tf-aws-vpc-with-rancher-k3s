@@ -144,7 +144,7 @@ resource "aws_route" "my_private_route" {
   count = var.create_nat_gateway ? 1 : 0
 
   route_table_id = aws_route_table.my_private_route_table[0].id
-  gateway_id             = aws_nat_gateway.my_nat_gateway.id
+  gateway_id             = aws_nat_gateway.my_nat_gateway[0].id
 
   destination_cidr_block = "0.0.0.0/0"
 
