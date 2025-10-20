@@ -1,12 +1,12 @@
-resource "aws_db_instance" "pht_db_instance" {
+resource "aws_db_instance" "my_db_instance" {
   allocated_storage = var.db_storage # 10Gi
   instance_class    = var.db_instance_class
 
   engine         = var.db_engine
   engine_version = var.db_engine_version
 
-  vpc_security_group_ids = [aws_security_group.pht_security_groups["rds"].id]
-  db_subnet_group_name   = aws_db_subnet_group.pht_db_subnet_group[0].name
+  vpc_security_group_ids = [aws_security_group.my_security_groups["rds"].id]
+  db_subnet_group_name   = aws_db_subnet_group.my_db_subnet_group[0].name
 
   identifier = var.db_identifier
   db_name    = var.dbname

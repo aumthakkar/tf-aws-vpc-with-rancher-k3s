@@ -3,7 +3,7 @@ resource "random_integer" "rand_int" {
   max = 10
 }
 
-resource "aws_vpc" "pht_vpc" {
+resource "aws_vpc" "my_vpc" {
   lifecycle {
     create_before_destroy = true
   }
@@ -28,24 +28,24 @@ resource "random_shuffle" "az_list" {
   result_count = 10
 }
 
-resource "aws_subnet" "pht_public_subnets" {
+resource "aws_subnet" "my_public_subnets" {
   count = var.public_subnet_count
 
-  vpc_id                  = aws_vpc.pht_vpc.id
+  vpc_id                  = aws_vpc.my_vpc.id
   map_public_ip_on_launch = true
 
   availability_zone = random_shuffle.az_list.result[count.index]
   cidr_block        = local.public_subnet_cidr_block[count.index]
 
   tags = {
-    Name = "pht-public-subnet-${count.index + 1}"
+    Name = "my-public-subnet-${count.index + 1}"
   }
 }
 
-resource "aws_subnet" "pht_private_subnets" {
+resource "aws_subnet" "my_private_subnets" {
   count = var.private_subnet_count
 
-  vpc_id                  = aws_vpc.pht_vpc.id
+  vpc_id                  = aws_vpc.my_vpc.id
   map_public_ip_on_launch = true
 
   availability_zone = random_shuffle.az_list.result[count.index]
@@ -57,50 +57,97 @@ resource "aws_subnet" "pht_private_subnets" {
 }
 
 
-resource "aws_internet_gateway" "pht_igw" {
-  vpc_id = aws_vpc.pht_vpc.id
+resource "aws_internet_gateway" "my_igw" {
+  vpc_id = aws_vpc.my_vpc.id
 
   tags = {
     Name = "${var.name_prefix}-igw"
   }
 }
 
-resource "aws_route_table" "pht_public_route_table" {
-  vpc_id = aws_vpc.pht_vpc.id
+resource "aws_route_table" "my_public_route_table" {
+  vpc_id = aws_vpc.my_vpc.id
 
   tags = {
     Name = "${var.name_prefix}-public-route-table"
   }
 }
 
-resource "aws_route_table_association" "pht_public_rt_association" {
+resource "aws_route_table_association" "my_public_rt_association" {
   count = var.public_subnet_count
 
-  route_table_id = aws_route_table.pht_public_route_table.id
-  subnet_id      = aws_subnet.pht_public_subnets[count.index].id
+  route_table_id = aws_route_table.my_public_route_table.id
+  subnet_id      = aws_subnet.my_public_subnets[count.index].id
 
 }
 
-resource "aws_route" "pht_public_route" {
-  route_table_id = aws_route_table.pht_public_route_table.id
+resource "aws_route" "my_public_route" {
+  route_table_id = aws_route_table.my_public_route_table.id
 
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.pht_igw.id
+  gateway_id             = aws_internet_gateway.my_igw.id
 
 }
 
-resource "aws_default_route_table" "pht_private_route_table" {
-  default_route_table_id = aws_vpc.pht_vpc.default_route_table_id
+resource "aws_default_route_table" "default_private_route_table" {
+  default_route_table_id = aws_vpc.my_vpc.default_route_table_id
+
+  tags = {
+    Name = "${var.name_prefix}-main-default-private-route-table"
+  }
+}
+
+
+resource "aws_route_table" "my_private_route_table" {
+  vpc_id = aws_vpc.my_eks_vpc.id
 
   tags = {
     Name = "${var.name_prefix}-private-route-table"
   }
 }
 
-resource "aws_security_group" "pht_security_groups" {
+resource "aws_eip" "my_nat_gw_eip" {
+  depends_on = [aws_internet_gateway.my_igw]
+
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.name_prefix}-nat-gw-eip"
+  }
+}
+
+
+resource "aws_nat_gateway" "my_nat_gateway" {
+  depends_on = [aws_internet_gateway.my_igw]
+
+  allocation_id = aws_eip.my_nat_gw_eip.id
+  subnet_id     = aws_subnet.my_public_subnets[0].id
+
+  tags = {
+    Name = "${var.name_prefix}-nat-gateway"
+  }
+}
+
+resource "aws_route_table_association" "my_private_rt_assoc" {
+  count = var.private_subnet_count
+
+  route_table_id = aws_route_table.my_private_route_table.id
+  subnet_id      = aws_subnet.my_private_subnets[count.index].id
+}
+
+
+resource "aws_route" "my_private_route" {
+  route_table_id = aws_route_table.my_private_route_table.id
+
+  gateway_id             = aws_nat_gateway.my_nat_gateway.id
+  destination_cidr_block = "0.0.0.0/0"
+
+}
+
+resource "aws_security_group" "my_security_groups" {
   for_each = local.security_groups
 
-  vpc_id = aws_vpc.pht_vpc.id
+  vpc_id = aws_vpc.my_vpc.id
 
   name        = each.value.name
   description = each.value.description
@@ -125,10 +172,10 @@ resource "aws_security_group" "pht_security_groups" {
   }
 }
 
-resource "aws_db_subnet_group" "pht_db_subnet_group" {
+resource "aws_db_subnet_group" "my_db_subnet_group" {
   count = var.create_db_subnet_group ? 1 : 0
 
-  subnet_ids = aws_subnet.pht_private_subnets.*.id
+  subnet_ids = aws_subnet.my_private_subnets.*.id
 
   tags = {
     Name = "${var.name_prefix}-db-subnet-group"

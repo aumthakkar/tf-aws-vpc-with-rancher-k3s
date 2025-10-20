@@ -2,10 +2,10 @@
 locals {
   security_groups = {
     public = {
-      name        = "pht-public-sg"
+      name        = "${var.name_prefix}-public-sg"
       description = "public-sg open only to your connection"
       tags = {
-        Name = "pht-public-sg"
+        Name = "${var.name_prefix}-public-sg"
       }
 
       ingress = {
