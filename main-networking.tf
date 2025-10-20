@@ -99,6 +99,8 @@ resource "aws_default_route_table" "default_private_route_table" {
 
 
 resource "aws_route_table" "my_private_route_table" {
+  count = var.create_nat_gateway ? 1 : 0
+
   vpc_id = aws_vpc.my_vpc.id
 
   tags = {
@@ -107,6 +109,7 @@ resource "aws_route_table" "my_private_route_table" {
 }
 
 resource "aws_eip" "my_nat_gw_eip" {
+  count = var.create_nat_gateway ? 1 : 0
   depends_on = [aws_internet_gateway.my_igw]
 
   domain = "vpc"
@@ -118,6 +121,7 @@ resource "aws_eip" "my_nat_gw_eip" {
 
 
 resource "aws_nat_gateway" "my_nat_gateway" {
+  count = var.create_nat_gateway ? 1 : 0
   depends_on = [aws_internet_gateway.my_igw]
 
   allocation_id = aws_eip.my_nat_gw_eip.id
@@ -128,18 +132,20 @@ resource "aws_nat_gateway" "my_nat_gateway" {
   }
 }
 
-resource "aws_route_table_association" "my_private_rt_assoc" {
-  count = var.private_subnet_count
+resource "aws_route_table_association" "my_private_rt_association" {
+  count = var.create_nat_gateway ? var.private_subnet_count : 0
 
-  route_table_id = aws_route_table.my_private_route_table.id
+  route_table_id = try(aws_route_table.my_private_route_table[0].id, null)
   subnet_id      = aws_subnet.my_private_subnets[count.index].id
 }
 
 
 resource "aws_route" "my_private_route" {
-  route_table_id = aws_route_table.my_private_route_table.id
+  count = var.create_nat_gateway ? 1 : 0
 
+  route_table_id = aws_route_table.my_private_route_table[0].id
   gateway_id             = aws_nat_gateway.my_nat_gateway.id
+
   destination_cidr_block = "0.0.0.0/0"
 
 }

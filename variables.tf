@@ -2,9 +2,6 @@ variable "name_prefix" {}
 
 variable "region" {}
 
-# variable "public_subnet_cidr_block" {}
-# variable "private_subnet_cidr_block" {}
-
 variable "ssh_access_ip" {}
 
 # Networking related variables
@@ -20,11 +17,14 @@ variable "private_subnet_count" {}
 variable "public_subnet_cidr_block" {}
 variable "private_subnet_cidr_block" {}
 
-# variable "security_groups" {}
-
 variable "create_db_subnet_group" {
   type        = bool
   description = "Decision whether to create db_subet_group"
+}
+
+variable "create_nat_gateway" {
+  type        = bool
+  description = "Whether to create NAT Gateway"
 }
 
 
@@ -62,13 +62,8 @@ variable "public_key" {}
 variable "instance_count" {}
 variable "instance_type" {}
 
-# variable "public_sg" {}
-# variable "public_subnets" {}
-
 # variable "dbuser" {}
 variable "dbpass" {}
-# variable "db_endpoint" {}
-# variable "dbname" {}
 
 variable "instance_vol_size" {}
 
