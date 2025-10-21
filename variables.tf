@@ -62,13 +62,8 @@ variable "public_key" {}
 variable "instance_count" {}
 variable "instance_type" {}
 
-# variable "dbuser" {}
-variable "dbpass" {}
-
 variable "instance_vol_size" {}
 
-
-# variable "lb_target_group_arn" {}
 variable "host_port" {}
 
 

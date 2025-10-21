@@ -109,7 +109,7 @@ resource "aws_route_table" "my_private_route_table" {
 }
 
 resource "aws_eip" "my_nat_gw_eip" {
-  count = var.create_nat_gateway ? 1 : 0
+  count      = var.create_nat_gateway ? 1 : 0
   depends_on = [aws_internet_gateway.my_igw]
 
   domain = "vpc"
@@ -121,7 +121,7 @@ resource "aws_eip" "my_nat_gw_eip" {
 
 
 resource "aws_nat_gateway" "my_nat_gateway" {
-  count = var.create_nat_gateway ? 1 : 0
+  count      = var.create_nat_gateway ? 1 : 0
   depends_on = [aws_internet_gateway.my_igw]
 
   allocation_id = aws_eip.my_nat_gw_eip[0].id
@@ -144,7 +144,7 @@ resource "aws_route" "my_private_route" {
   count = var.create_nat_gateway ? 1 : 0
 
   route_table_id = aws_route_table.my_private_route_table[0].id
-  gateway_id             = aws_nat_gateway.my_nat_gateway[0].id
+  gateway_id     = aws_nat_gateway.my_nat_gateway[0].id
 
   destination_cidr_block = "0.0.0.0/0"
 

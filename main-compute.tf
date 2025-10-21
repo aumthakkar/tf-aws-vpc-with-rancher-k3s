@@ -39,7 +39,7 @@ resource "aws_instance" "my_node" {
     {
       nodename    = "${var.name_prefix}-nodeid-${random_id.my_node_id[count.index].dec}"
       dbuser      = var.dbuser
-      dbpass      = var.dbpassword
+      dbpassword  = var.dbpassword
       db_endpoint = aws_db_instance.my_db_instance.endpoint
       dbname      = var.dbname
     }
